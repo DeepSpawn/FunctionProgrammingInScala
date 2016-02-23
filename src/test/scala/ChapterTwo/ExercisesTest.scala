@@ -1,6 +1,6 @@
 package ChapterTwo
 
-import ChapterTwo.Exercises.{fib, isSorted}
+import ChapterTwo.Exercises._
 import org.scalacheck.Gen
 import org.scalatest.prop.PropertyChecks
 import org.scalatest.{ShouldMatchers, PropSpec}
@@ -38,6 +38,5 @@ class ExercisesTest extends PropSpec with PropertyChecks with ShouldMatchers {
       }
     }
   }
-
 
 }
