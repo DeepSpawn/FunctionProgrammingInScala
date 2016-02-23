@@ -17,5 +17,10 @@ object Exercises {
     go(1, 0, 1)
   }
 
+  //2.2
+  def isSorted[A](as: Array[A], ordered: (A,A) => Boolean): Boolean = {
+      as.sliding(2, 1).forall(pair => ordered(pair(0),pair(1)))
+  }
+
 
 }
