@@ -55,18 +55,46 @@ class List {
 
     def tail[A](l: List[A]): List[A] = {
       l match {
-        case Nil => sys.error("you done messed up")
+        case Nil => Nil
         case Cons(_, t) => t
       }
     }
 
-    def setHead[A](l: List[A], h: A): List[A] = sys.error("todo")
+    def setHead[A](l: List[A], h: A): List[A] = {
+      l match {
+        case Nil => Cons(h, Nil)
+        case Cons(_, t) => Cons(h,t)
+      }
+    }
 
-    def drop[A](l: List[A], n: Int): List[A] = sys.error("todo")
+    def drop[A](l: List[A], n: Int): List[A] = {
+      @annotation.tailrec
+      def go(i: Int, ll: List[A]): List[A] = {
+        if (i == n) return ll
+        go(i + 1, tail(ll))
+      }
+      go(1, l)
+    }
 
-    def dropWhile[A](l: List[A], f: A => Boolean): List[A] = sys.error("todo")
+    def dropWhile[A](l: List[A])(f: A => Boolean): List[A] = {
+      l match {
+          //note the use of a guard statement that means it wont match unless the guard returns true
+        case Cons(h,t) if f(h) => dropWhile(t)(f)
+        case _ => l
+      }
+    }
 
-    def init[A](l: List[A]): List[A] = sys.error("todo")
+    def init[A](l: List[A]): List[A] = {
+
+      def go(acc:List[A], ll:List[A]): List[A] = {
+        ll match {
+          case Nil => Nil
+          case Cons(h,t) => if(t == Nil) acc else go(Cons(h, acc), t);
+        }
+      }
+
+      go(Nil, l)
+    }
 
     def length[A](l: List[A]): Int = sys.error("todo")
 
