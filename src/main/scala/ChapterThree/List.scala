@@ -1,13 +1,18 @@
 package ChapterThree
 
-sealed trait List[+A] // `List` data type, parameterized on a type, `A`
-case object Nil extends List[Nothing] // A `List` data constructor representing the empty list
+sealed trait List[+A]
+
+// `List` data type, parameterized on a type, `A`
+case object Nil extends List[Nothing]
+
+// A `List` data constructor representing the empty list
 /* Another data constructor, representing nonempty lists. Note that `tail` is another `List[A]`,
 which may be `Nil` or another `Cons`.
  */
 case class Cons[+A](head: A, tail: List[A]) extends List[A]
 
-object List { // `List` companion object. Contains functions for creating and working with lists.
+object List {
+  // `List` companion object. Contains functions for creating and working with lists.
 
 
   /* Another data constructor, representing nonempty lists. Note that `tail` is another `List[A]`,
@@ -43,6 +48,10 @@ object List { // `List` companion object. Contains functions for creating and wo
       case Nil => a2
       case Cons(h, t) => Cons(h, append(t, a2))
     }
+
+  def append2[A](a1: List[A], a2: List[A]): List[A] =
+    foldRight(a1, a2)((h, t) => Cons(h, t))
+
 
   def foldRight[A, B](as: List[A], z: B)(f: (A, B) => B): B = // Utility functions
     as match {
@@ -89,13 +98,49 @@ object List { // `List` companion object. Contains functions for creating and wo
   }
 
   def init[A](l: List[A]): List[A] = {
-    //drop the last element from the list and return the rest
+    l match {
+      case Cons(h, t) if t == Nil => Nil
+      case Cons(h, t) => Cons(h, init(t))
+    }
   }
 
-  def length[A](l: List[A]): Int = sys.error("todo")
+  def length[A](l: List[A]): Int = {
+    foldRight(l, 0)((a, b) => 1 + b)
+  }
 
-  def foldLeft[A, B](l: List[A], z: B)(f: (B, A) => B): B = sys.error("todo")
+  @annotation.tailrec
+  def foldLeft[A, B](l: List[A], z: B)(f: (B, A) => B): B =
+    l match {
+      case Nil => z
+      case Cons(h, t) => foldLeft(t, f(z, h))(f)
+    }
 
-  def map[A, B](l: List[A])(f: A => B): List[B] = sys.error("todo")
+  def reverse[A](l: List[A]): List[A] = {
+    foldLeft(l, Nil: List[A])((t, h) => Cons(h, t))
+  }
+
+  def map[A, B](l: List[A])(f: A => B): List[B] = {
+    foldRight(l,Nil:List[B])((a,b) => Cons(f(a),b))
+  }
+
+  def concatenate[A](ll: List[List[A]]): List[A] = {
+    foldRight(ll, Nil: List[A])(append)
+  }
+
+  def addOne(l: List[Int]): List[Int] = {
+    foldRight(l,Nil:List[Int])((h,t) => Cons(h+1,t))
+  }
+
+  def doubleToString(l: List[Double]): List[String] = {
+    foldRight(l,Nil:List[String])((h,t) => Cons(h.toString,t))
+  }
+
+  def filter[A](as: List[A])(f: A => Boolean): List[A] = {
+    as match {
+      case Nil => Nil
+      case Cons(h,t) if f(h) => Cons(h,filter(t)(f))
+      case Cons(h,t) => filter(t)(f)
+    }
+  }
 
 }
