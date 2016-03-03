@@ -77,6 +77,22 @@ class ListTests extends FlatSpec with Matchers {
     ChapterThree.List.filter(List(1,2,3,4))(_ % 2 == 0) shouldEqual List(2,4)
   }
 
+  "filter2" should "remove items that dont match the predicate" in {
+    ChapterThree.List.filter(List(1,2,3,4))(_ % 2 == 0) shouldEqual List(2,4)
+  }
+
+  "flatmap" should "remove flatmap correctly" in {
+    ChapterThree.List.flatMap(List(1,2,3))(i => List(i,i)) shouldEqual List(1,1,2,2,3,3)
+  }
+
+  "addElem" should "remove add corresponding elements together" in {
+    ChapterThree.List.addElem(List(1,2,3),List(4,5,6)) shouldEqual List(5,7,9)
+  }
+
+  "zipWith" should "zip the lists together" in {
+    ChapterThree.List.zipWith(List(1,2,3),List(4,5,6))(_ * _) shouldEqual List(4,10,18)
+  }
+
 
 
 

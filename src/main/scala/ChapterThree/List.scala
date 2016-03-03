@@ -136,11 +136,34 @@ object List {
   }
 
   def filter[A](as: List[A])(f: A => Boolean): List[A] = {
-    as match {
-      case Nil => Nil
-      case Cons(h,t) if f(h) => Cons(h,filter(t)(f))
-      case Cons(h,t) => filter(t)(f)
+    foldRight(as, Nil:List[A])((h,t) => if(f(h)) Cons(h,t) else t)
+  }
+
+  def filter2[A](as: List[A])(f: A => Boolean): List[A] = {
+    flatMap(as)(i => if(f(i)) List(i) else Nil)
+  }
+
+  def flatMap[A,B](as: List[A])(f: A => List[B]): List[B] = {
+    concatenate(map(as)(f))
+  }
+
+  def addElem(as:List[Int],bs:List[Int]) : List[Int] = {
+
+    (as,bs) match {
+      case (aas,Nil) => aas
+      case (Nil,bbs) => bbs
+      case (Cons(h1,t1),Cons(h2,t2)) => Cons(h1+h2, addElem(t1,t2))
     }
   }
+
+  def zipWith[A](as:List[A],bs:List[A])(f:(A,A) => A) : List[A] = {
+
+    (as,bs) match {
+      case (aas,Nil) => aas
+      case (Nil,bbs) => bbs
+      case (Cons(h1,t1),Cons(h2,t2)) => Cons(f(h1,h2), zipWith(t1,t2)(f))
+    }
+  }
+
 
 }
