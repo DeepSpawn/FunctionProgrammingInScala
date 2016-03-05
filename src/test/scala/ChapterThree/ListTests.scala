@@ -8,7 +8,6 @@ import ChapterThree.{List => MyList}
   */
 class ListTests extends FlatSpec with Matchers {
 
-
   "tail" should "return all elements but the first" in {
     ChapterThree.List.tail(MyList(1, 2, 3)) shouldEqual MyList(2, 3)
   }
