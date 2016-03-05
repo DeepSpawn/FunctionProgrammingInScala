@@ -87,5 +87,11 @@ object Option {
         remaining <- if(t == Nil) Some(List()) else traverse(t)(f)
       } yield b :: remaining
     }
+// So I need to remember about the existence of map2 and use it where appropriate
+//
+//    a match {
+//      case Nil => Some(Nil)
+//      case h::t => map2(f(h), traverse(t)(f))(_ :: _)
+//    }
   }
 }
