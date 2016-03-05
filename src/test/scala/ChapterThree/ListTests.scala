@@ -93,7 +93,11 @@ class ListTests extends FlatSpec with Matchers {
     ChapterThree.List.zipWith(List(1,2,3),List(4,5,6))(_ * _) shouldEqual List(4,10,18)
   }
 
-
-
+  "hasSubSeq" should "find a valid subsequence" in {
+    ChapterThree.List.hasSubsequence(List(1,2,3,4),List(1,2)) shouldEqual true
+    ChapterThree.List.hasSubsequence(List(1,2,3,4),List(2,3)) shouldEqual true
+    ChapterThree.List.hasSubsequence(List(1,2,3,4),List(4)) shouldEqual true
+    ChapterThree.List.hasSubsequence(List(1,2,3,4),List(5)) shouldEqual false
+  }
 
 }

@@ -157,11 +157,19 @@ object List {
   }
 
   def zipWith[A](as:List[A],bs:List[A])(f:(A,A) => A) : List[A] = {
-
     (as,bs) match {
       case (aas,Nil) => aas
       case (Nil,bbs) => bbs
       case (Cons(h1,t1),Cons(h2,t2)) => Cons(f(h1,h2), zipWith(t1,t2)(f))
+    }
+  }
+
+  def hasSubsequence[A](sup: List[A], sub: List[A]): Boolean = {
+    (sup,sub) match {
+      case (_,Nil) => return true
+      case (Cons(h1,t1),Cons(h2,t2)) if h1==h2 => hasSubsequence(t1,t2)
+      case (Cons(h1,t1),Cons(h2,t2)) => hasSubsequence(t1, sub)
+      case (Nil, _) => return false
     }
   }
 
