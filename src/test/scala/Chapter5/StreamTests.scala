@@ -33,7 +33,7 @@ class StreamTests extends FlatSpec with Matchers{
   }
 
   "headOption" should "returns the first element if present" in {
-    ChapterFive.Stream(1, ()=>{println("not lazy"); 2},3,4,5).headOption shouldEqual Some(1)
+    ChapterFive.Stream(1, ()=>{throw new RuntimeException("not lazy"); 2},3,4,5).headOption shouldEqual Some(1)
     ChapterFive.Stream().headOption shouldEqual None
   }
 
