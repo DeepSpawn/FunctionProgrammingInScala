@@ -107,12 +107,25 @@ object Stream {
     Cons(() => n, () => from(n + 1))
 
   def fibs(): Stream[Int] = {
+    def fib(prev:Int, current:Int):Stream[Int] = {
+      Cons(() => prev + current, () => fib(current, prev + current))
+    }
+
     Cons(() => 0, () => Cons(() => 1, () => fib(0,1)))
   }
 
-  def fib(prev:Int, current:Int):Stream[Int] = {
-    Cons(() => prev + current, () => fib(current, prev + current))
+  def unfold[A, S](z: S)(f: S => Option[(A, S)]): Stream[A] = {
+    f(z).map(tup => Cons(() => tup._1, () => unfold(tup._2)(f)))
+      .getOrElse(Empty: Stream[A])
   }
 
-  def unfold[A, S](z: S)(f: S => Option[(A, S)]): Stream[A] = sys.error("todo")
+  val ones2: Stream[Int] = unfold(1)(n => Some(n,n))
+
+  def constant2[A](a: A): Stream[A] = unfold(a)(a => Some(a,a))
+
+  def from2(n: Int): Stream[Int] = unfold(n)(n => Some(n,n+1))
+
+  def fibs2(): Stream[Int] = unfold((0,1))(tup => Some(tup._1, (tup._2, tup._1 + tup._2)))
+
+
 }

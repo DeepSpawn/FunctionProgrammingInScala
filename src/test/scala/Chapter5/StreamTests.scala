@@ -48,6 +48,41 @@ class StreamTests extends FlatSpec with Matchers{
     ChapterFive.Stream(1,2,3,4,5).flatMap(i => ChapterFive.Stream(i,i)).toList() shouldEqual List(1,1,2,2,3,3,4,4,5,5)
   }
 
+  "ones2" should "return a stream of ones" in {
+    ChapterFive.Stream.ones2.take(5).toList() shouldEqual List(1,1,1,1,1)
+  }
+
+  "constant" should "return a stream of the given value" in {
+    ChapterFive.Stream.constant(3).take(3).toList()shouldEqual List(3,3,3)
+  }
+
+  "constant2" should "return a stream of the given value" in {
+    ChapterFive.Stream.constant2(3).take(3).toList()shouldEqual List(3,3,3)
+  }
+
+  "from" should "return a stream starting from the given value" in {
+    ChapterFive.Stream.from(1).take(3).toList()shouldEqual List(1,2,3)
+  }
+
+  "from2" should "return a stream starting from the given value" in {
+    ChapterFive.Stream.from2(1).take(3).toList()shouldEqual List(1,2,3)
+  }
+
+  "fibs" should "return a stream of the fibbonaci sequence" in {
+    ChapterFive.Stream.fibs().take(6).toList()shouldEqual List(0,1,1,2,3,5)
+  }
+
+  "fibs2" should "return a stream of the fibbonaci sequence" in {
+    ChapterFive.Stream.fibs2().take(6).toList()shouldEqual List(0,1,1,2,3,5)
+  }
+
+  "unfold" should "return a stream generated from the supplied unfold function" in {
+    ChapterFive.Stream.unfold(1)(n => if(n < 5) Some((n+1,n+1)) else None).toList() shouldEqual List(2,3,4,5)
+  }
+
+
+
+
 
 
 
