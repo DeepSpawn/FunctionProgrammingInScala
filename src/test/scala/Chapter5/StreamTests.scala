@@ -139,6 +139,11 @@ class StreamTests extends FlatSpec with Matchers{
     ChapterFive.Stream().zipAll(ChapterFive.Stream()).take(3).toList() shouldEqual List()
   }
 
+  "startsWith" should "return true iff the stream starts with that sequence" in {
+    ChapterFive.Stream(1,2,3).startsWith(ChapterFive.Stream(1,2)) shouldEqual true
+    ChapterFive.Stream(1,2,3).startsWith(ChapterFive.Stream(2,3)) shouldEqual false
+  }
+
 
 
 

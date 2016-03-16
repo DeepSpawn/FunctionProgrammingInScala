@@ -110,9 +110,6 @@ trait Stream[+A] {
 
   //  def zipAll[B](s2: Stream[B]): Stream[(Option[A],Option[B])]
 //
-
-  def startsWith[B](s: Stream[B]): Boolean = sys.error("todo")
-
   def toList(): List[A] = {
     this match {
       case Empty => Nil
@@ -144,6 +141,10 @@ trait Stream[+A] {
       case (Some(Empty), Some(Empty)) => None
       case (None, None) => None
     }
+  }
+
+  def startsWith[B](s: Stream[B]): Boolean = {
+    this.zipWith(s).foldRight(true)((tup, bool) => bool && tup._1 == tup._2)
   }
 
 
