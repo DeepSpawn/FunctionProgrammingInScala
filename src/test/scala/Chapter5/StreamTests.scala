@@ -15,6 +15,21 @@ class StreamTests extends FlatSpec with Matchers{
     ChapterFive.Stream(1,2,3,4,5).take(6).toList shouldEqual List(1,2,3,4,5)
   }
 
+  "take2" should "should return a stream of the first N elements" in {
+    ChapterFive.Stream(1,2,3,4,5).take2(2).toList shouldEqual List(1,2)
+    ChapterFive.Stream(1,2,3,4,5).take2(3).toList shouldEqual List(1,2,3)
+    ChapterFive.Stream(1,2,3,4,5).take2(1).toList shouldEqual List(1)
+    ChapterFive.Stream(1,2,3,4,5).take2(0).toList shouldEqual List()
+    ChapterFive.Stream(1,2,3,4,5).take2(6).toList shouldEqual List(1,2,3,4,5)
+  }
+
+  "drop" should "should drop the first N elements" in {
+    ChapterFive.Stream(1,2,3,4,5).drop(3).toList shouldEqual List(4,5)
+    ChapterFive.Stream(1,2,3,4,5).drop(1).toList shouldEqual List(2,3,4,5)
+    ChapterFive.Stream(1,2,3,4,5).drop(0).toList shouldEqual List(1,2,3,4,5)
+    ChapterFive.Stream(1,2,3,4,5).drop(6).toList shouldEqual List()
+  }
+
   "takeWhile" should "convert return a stream of the consecutive elements where the predicate is true" in {
     ChapterFive.Stream(1,2,3,4,5).takeWhile(_ != 0).toList shouldEqual List(1,2,3,4,5)
     ChapterFive.Stream(2,4,6,7,8).takeWhile(_ % 2 == 0).toList shouldEqual List(2,4,6)
@@ -25,6 +40,12 @@ class StreamTests extends FlatSpec with Matchers{
     ChapterFive.Stream(1,2,3,4,5).takeWhile2(_ != 0).toList shouldEqual List(1,2,3,4,5)
     ChapterFive.Stream(2,4,6,7,8).takeWhile2(_ % 2 == 0).toList shouldEqual List(2,4,6)
     ChapterFive.Stream(1,2,3,4,5).takeWhile2(_ % 2 == 0).toList shouldEqual List()
+  }
+
+  "takeWhile3" should "convert return a stream of the consecutive elements where the predicate is true" in {
+    ChapterFive.Stream(1,2,3,4,5).takeWhile3(_ != 0).toList shouldEqual List(1,2,3,4,5)
+    ChapterFive.Stream(2,4,6,7,8).takeWhile3(_ % 2 == 0).toList shouldEqual List(2,4,6)
+    ChapterFive.Stream(1,2,3,4,5).takeWhile3(_ % 2 == 0).toList shouldEqual List()
   }
 
   "forall" should "returns true if the predicate holds" in {
@@ -43,6 +64,15 @@ class StreamTests extends FlatSpec with Matchers{
     ChapterFive.Stream().append(ChapterFive.Stream(6,7,8,9,10)).toList() shouldEqual List(6,7,8,9,10)
 
   }
+
+  "map" should "returns a stream of each term after it has been applied" in {
+    ChapterFive.Stream(1,2,3,4,5).map(i => i+i).toList() shouldEqual List(2,4,6,8,10)
+  }
+
+  "map2" should "returns a stream of each term after it has been applied" in {
+    ChapterFive.Stream(1,2,3,4,5).map2(i => i+i).toList() shouldEqual List(2,4,6,8,10)
+  }
+
 
   "flatmap" should "returns one stream of the results" in {
     ChapterFive.Stream(1,2,3,4,5).flatMap(i => ChapterFive.Stream(i,i)).toList() shouldEqual List(1,1,2,2,3,3,4,4,5,5)
@@ -80,6 +110,34 @@ class StreamTests extends FlatSpec with Matchers{
     ChapterFive.Stream.unfold(1)(n => if(n < 5) Some((n+1,n+1)) else None).toList() shouldEqual List(2,3,4,5)
   }
 
+  "zipWith" should "zip the streams together" in {
+    ChapterFive.Stream(1,2,3).zipWith(ChapterFive.Stream(4,5,6)).take(3).toList() shouldEqual List((1,4),(2,5),(3,6))
+    ChapterFive.Stream(1,2,3).zipWith(ChapterFive.Stream(4,5,6,7)).take(3).toList() shouldEqual List((1,4),(2,5),(3,6))
+    ChapterFive.Stream(1,2,3,4).zipWith(ChapterFive.Stream(4,5,6)).take(3).toList() shouldEqual List((1,4),(2,5),(3,6))
+    ChapterFive.Stream().zipWith(ChapterFive.Stream(4,5,6)).take(3).toList() shouldEqual List()
+    ChapterFive.Stream(1,2,3,4) .zipWith(ChapterFive.Stream()).take(3).toList() shouldEqual List()
+  }
+
+  "zipAll" should "zip the streams together including all elements of the longer stream" in {
+
+
+    ChapterFive.Stream(1, 2, 3).zipAll(ChapterFive.Stream(4, 5, 6)).take(3).toList()
+      .shouldEqual(List((Some(1), Some(4)), (Some(2), Some(5)), (Some(3), Some(6))))
+
+    ChapterFive.Stream(1, 2, 3).zipAll(ChapterFive.Stream(4, 5, 6, 7)).take(4).toList()
+      .shouldEqual(List((Some(1), Some(4)), (Some(2), Some(5)), (Some(3), Some(6)), (None, Some(7))))
+
+    ChapterFive.Stream(1, 2, 3, 4).zipAll(ChapterFive.Stream(4, 5, 6)).take(4).toList()
+      .shouldEqual(List((Some(1), Some(4)), (Some(2), Some(5)), (Some(3), Some(6)), (Some(4), None)))
+
+    ChapterFive.Stream().zipAll(ChapterFive.Stream(4, 5, 6)).take(3).toList()
+      .shouldEqual(List((None, Some(4)), (None, Some(5)), (None, Some(6))))
+
+    ChapterFive.Stream(1, 2, 3).zipAll(ChapterFive.Stream()).take(3).toList()
+      .shouldEqual(List((Some(1), None), (Some(2), None), (Some(3), None)))
+
+    ChapterFive.Stream().zipAll(ChapterFive.Stream()).take(3).toList() shouldEqual List()
+  }
 
 
 
