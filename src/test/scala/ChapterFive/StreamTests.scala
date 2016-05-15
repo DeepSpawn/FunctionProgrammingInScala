@@ -1,4 +1,4 @@
-package Chapter5
+package ChapterFive
 
 import org.scalatest.{FlatSpec, Matchers}
 
@@ -144,8 +144,13 @@ class StreamTests extends FlatSpec with Matchers{
     ChapterFive.Stream(1,2,3).startsWith(ChapterFive.Stream(2,3)) shouldEqual false
   }
 
+  "tails" should "return a stream of the suffixes of the stream" in {
+    ChapterFive.Stream(1,2,3).tails.map(_.toList()).toList() shouldEqual List(List(1,2,3),List(2,3),List(3),List())
+  }
 
-
+//  "tails" should "return a stream of the suffixes of the stream" in {
+//    ChapterFive.Stream(1,2,3).scanRight(0)(_ + _).toList shouldEqual List(1+2+3+0, 2+3+0, 3+0, 0)
+//  }
 
 
 

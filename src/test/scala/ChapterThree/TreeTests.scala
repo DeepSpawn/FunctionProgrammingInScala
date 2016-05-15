@@ -3,9 +3,6 @@ package ChapterThree
 import ChapterThree.Tree.{Branch, Leaf, Tree}
 import org.scalatest._
 
-/**
-  * Created by gtaylor on 5/03/2016.
-  */
 class TreeTests extends FlatSpec with Matchers {
 
   "size" should "return the number of nodes in the tree" in {

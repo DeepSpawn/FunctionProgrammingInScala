@@ -56,7 +56,7 @@ object List {
   def foldRight[A, B](as: List[A], z: B)(f: (A, B) => B): B = // Utility functions
     as match {
       case Nil => z
-      case Cons(x, xs) => f(x, foldRight(xs, z)(f))
+      case Cons(h, t) => f(h, foldRight(t, z)(f))
     }
 
   def sum2(ns: List[Int]) =
@@ -156,7 +156,7 @@ object List {
     }
   }
 
-  def zipWith[A](as:List[A],bs:List[A])(f:(A,A) => A) : List[A] = {
+  def zipWith[A](as:List[A], bs:List[A])(f:(A,A) => A) : List[A] = {
     (as,bs) match {
       case (aas,Nil) => aas
       case (Nil,bbs) => bbs
