@@ -36,18 +36,43 @@ class RNGTest extends PropSpec with PropertyChecks with ShouldMatchers {
     }
   }
 
-
   property("ints (using seq) produces a list of number of the correct length") {
-    forAll(Gen.chooseNum(0, 10000)) { (n: Int) =>
-      whenever(n > 0 && n < 10000){
+    forAll(Gen.chooseNum(0, 1000)) { (n: Int) =>
+      whenever(n > 0 && n < 1000) {
         val rng = Simple(n)
-       val rands = ints(n)(rng)(rng)._1
-        rands.length == n
+        val rands = ints(n)(rng)._1
+        rands.length == n && rands.forall(num => n > 0 && n <= Integer.MAX_VALUE)
       }
     }
   }
 
+  property("nonNegativeLessThanFlatmappy produces positive numbers in the right range numbers") {
+    forAll(Gen.chooseNum(10, 100)) { (n: Int) =>
+      whenever(n > 10 && n < 100){
+        val (rnd:Int, _) =  nonNegativeLessThanFlatmappy(n)(Simple(n))
+        println(rnd)
+        rnd < n
+      }
+    }
+  }
 
+  property("nonNegativeLessThan produces positive numbers in the right range numbers") {
+    forAll(Gen.chooseNum(10, 100)) { (n: Int) =>
+      whenever(n > 10 && n < 100){
+        val (rnd:Int, _) =  nonNegativeLessThan(n)(Simple(n))
+        rnd < n
+      }
+    }
+  }
+
+  property("both returns a pair of the expected rands") {
+    forAll(Gen.chooseNum(1, 100)) { (n: Int) =>
+      whenever(n > 1 && n < 100){
+        val ((n1,n2),r) = both(nonNegativeInt,nonNegativeInt)(Simple(n))
+        n1 > 0 && n2 > 0
+      }
+    }
+  }
 }
 
 
