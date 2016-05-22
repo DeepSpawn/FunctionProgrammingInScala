@@ -144,7 +144,7 @@ case class State[S, +A](run: S => (A, S)) {
   def map[B](f: A => B): State[S, B] = {
     flatMap((a: A) => State((s: S) => (f(a), s)))
   }
-       
+
   def map2[B, C](sb: State[S, B])(f: (A, B) => C): State[S, C] =
     flatMap((a: A) =>
       sb.flatMap((b: B) =>
@@ -157,6 +157,11 @@ case class State[S, +A](run: S => (A, S)) {
     })
 }
 
+//Inserting a coin into a locked machine will cause it to unlock if there’s any candy left.
+//Turning the knob on an unlocked machine will cause it to dispense candy and become locked.
+//Turning the knob on a locked machine or inserting a coin into an unlocked machine does nothing.
+//A machine that’s out of candy ignores all inputs.
+
 sealed trait Input
 
 case object Coin extends Input
@@ -165,8 +170,62 @@ case object Turn extends Input
 
 case class Machine(locked: Boolean, candies: Int, coins: Int)
 
+object Machine {
+
+}
+
 object State {
   type Rand[A] = State[RNG, A]
+  type CandyMachine = State[Machine, (Int, Int)]
 
-  def simulateMachine(inputs: List[Input]): State[Machine, (Int, Int)] = ???
+  def simulateMachine(inputs: List[Input]): CandyMachine = {
+    State[Machine, (Int, Int)]((m: Machine) => {
+      var machine: Machine = m
+      var output: ((Int, Int), Machine) = inspectMachine().run(m)
+      for (input <- inputs) {
+        output = run(input, machine).run(machine)
+        machine = output._2
+      }
+      output
+    })
+  }
+
+
+  def run(input:Input, machine: Machine): CandyMachine = {
+    input match {
+      case Coin => State[Machine, (Int, Int)] ((m:Machine) => inspectMachine().run(insertCoin(m)))
+      case Turn => State[Machine, (Int, Int)] ((m:Machine) => inspectMachine().run(turnKnob(machine)))
+    }
+
+
+  }
+
+  def insertCoin(m: Machine): Machine = {
+    m match {
+      //A machine that’s out of candy ignores all inputs.
+      case Machine(_, 0, _) => m
+      //Inserting a coin into a locked machine will cause it to unlock if there’s any candy left.
+      case Machine(true, candies, coins) if candies > 0 => Machine(false, candies, coins + 1)
+      //Inserting a coin into an unlocked machine does nothing.
+      case Machine(false, _, _) => m
+    }
+  }
+
+  def turnKnob(m: Machine): Machine = {
+    m match {
+      //A machine that’s out of candy ignores all inputs.
+      case Machine(_, 0, _) => m
+      //Turning the knob on an unlocked machine will cause it to dispense candy and become locked.
+      case Machine(false, candies, coins) if candies > 0 => Machine(true, candies - 1, coins)
+      //Turning the knob on a locked machine does nothing.
+      case Machine(true, _, _) => m
+    }
+  }
+
+  def inspectMachine() : CandyMachine = {
+  State[Machine, (Int, Int)] {
+    case machine@Machine(_, candy, coins) => ((candy, coins), machine)
+  }
+  }
+
 }
